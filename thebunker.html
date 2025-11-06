@@ -1,0 +1,1837 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TheBunker - Estudio de Tatuajes Profesional</title>
+    <meta name="description" content="Estudio de tatuajes profesional especializado en diseños únicos. Reserva tu cita y convierte tu idea en arte corporal.">
+    <meta name="keywords" content="tatuajes, tattoo, estudio, arte corporal, diseños únicos">
+    
+    <!-- Open Graph -->
+    <meta property="og:title" content="TheBunker - Estudio de Tatuajes">
+    <meta property="og:description" content="Convierte tu idea en arte corporal.">
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="./assets/og-image.jpg">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="./assets/favicon.ico">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- EmailJS -->
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+    
+    <!-- reCAPTCHA -->
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+    
+    <style>
+        :root {
+            --primary-color: #000000;
+            --secondary-color: #504a4a;
+            --accent-color: #ffa502;
+            --text-light: #ffffff;
+            --text-dark: #2c2c2c;
+            --bg-dark: #1a1a1a;
+            --bg-light: #f8f9fa;
+            --gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --shadow: 0 15px 35px rgba(0,0,0,0.1);
+            --transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            line-height: 1.6;
+            color: var(--text-dark);
+            overflow-x: hidden;
+        }
+
+        /* Loading Screen */
+        .loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: var(--bg-dark);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+            transition: opacity 0.5s ease;
+        }
+
+        .loading-screen.fade-out {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .loader {
+            width: 60px;
+            height: 60px;
+            border: 4px solid rgba(255, 71, 87, 0.3);
+            border-left: 4px solid var(--secondary-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Navigation */
+        .navbar {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1rem 0;
+            z-index: 1000;
+            transition: var(--transition);
+        }
+
+        .navbar.scrolled {
+            background: rgba(0, 0, 0, 0.98);
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--text-light);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .logo i {
+            color: var(--secondary-color);
+        }
+
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        .nav-menu a {
+            color: var(--text-light);
+            text-decoration: none;
+            font-weight: 500;
+            transition: var(--transition);
+            position: relative;
+        }
+
+        .nav-menu a:hover {
+            color: var(--secondary-color);
+        }
+
+        .nav-menu a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--secondary-color);
+            transition: var(--transition);
+        }
+
+        .nav-menu a:hover::after {
+            width: 100%;
+        }
+
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            cursor: pointer;
+            padding: 0.5rem;
+        }
+
+        .hamburger span {
+            width: 25px;
+            height: 3px;
+            background: var(--text-light);
+            margin: 3px 0;
+            transition: var(--transition);
+        }
+
+        /* Hero Section */
+        .hero {
+            height: 100vh;
+            background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.4)), url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080"><rect fill="%23000" width="1920" height="1080"/><circle cx="400" cy="300" r="2" fill="%23ff4757" opacity="0.5"><animate attributeName="opacity" values="0.5;1;0.5" dur="2s" repeatCount="indefinite"/></circle><circle cx="800" cy="200" r="1.5" fill="%23ffa502" opacity="0.7"><animate attributeName="opacity" values="0.7;1;0.7" dur="3s" repeatCount="indefinite"/></circle><circle cx="1200" cy="400" r="2.5" fill="%23ff4757" opacity="0.6"><animate attributeName="opacity" values="0.6;1;0.6" dur="2.5s" repeatCount="indefinite"/></circle></svg>');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: var(--text-light);
+            position: relative;
+        }
+
+        .hero-content {
+            max-width: 800px;
+            padding: 0 2rem;
+            animation: fadeInUp 1s ease-out;
+        }
+
+        .hero h1 {
+            font-size: clamp(3rem, 8vw, 5rem);
+            font-weight: 700;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+
+        .hero-subtitle {
+            font-size: clamp(1.2rem, 3vw, 1.8rem);
+            margin-bottom: 2rem;
+            opacity: 0.9;
+        }
+
+        .cta-button {
+            display: inline-block;
+            background: var(--secondary-color);
+            color: var(--text-light);
+            padding: 1rem 2.5rem;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: var(--transition);
+            box-shadow: 0 8px 25px rgba(255, 71, 87, 0.3);
+        }
+
+        .cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 35px rgba(255, 71, 87, 0.4);
+        }
+
+        /* Sections */
+        .section {
+            padding: 6rem 0;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .section-title {
+            font-size: clamp(2.5rem, 5vw, 3.5rem);
+            font-weight: 700;
+            margin-bottom: 1rem;
+            position: relative;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 4px;
+            background: var(--secondary-color);
+            border-radius: 2px;
+        }
+
+        .section-subtitle {
+            font-size: 1.2rem;
+            color: #666;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* About Section */
+        .about {
+            background: var(--bg-light);
+        }
+
+        .about-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+        }
+
+        .about-text {
+            font-size: 1.1rem;
+            line-height: 1.8;
+        }
+
+        .about-text h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--primary-color);
+        }
+
+        .about-image {
+            position: relative;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+        }
+
+        .about-image img {
+            width: 100%;
+            height: 400px;
+            object-fit: cover;
+            transition: var(--transition);
+        }
+
+        .about-image:hover img {
+            transform: scale(1.05);
+        }
+
+        /* Gallery Section */
+        .gallery {
+            padding: 6rem 0;
+        }
+
+        .gallery-filters {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-bottom: 3rem;
+        }
+
+        .filter-btn {
+            padding: 0.8rem 1.5rem;
+            background: transparent;
+            border: 2px solid var(--primary-color);
+            color: var(--primary-color);
+            border-radius: 25px;
+            cursor: pointer;
+            transition: var(--transition);
+            font-weight: 500;
+        }
+
+        .filter-btn.active,
+        .filter-btn:hover {
+            background: var(--secondary-color);
+            border-color: var(--secondary-color);
+            color: var(--text-light);
+        }
+
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .gallery-item {
+            position: relative;
+            border-radius: 15px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: var(--transition);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+
+        .gallery-item:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 300px;
+            object-fit: cover;
+            transition: var(--transition);
+        }
+
+        .gallery-item:hover img {
+            transform: scale(1.1);
+        }
+
+        .gallery-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(to bottom, transparent, rgba(0,0,0,0.8));
+            display: flex;
+            align-items: flex-end;
+            padding: 1.5rem;
+            opacity: 0;
+            transition: var(--transition);
+        }
+
+        .gallery-item:hover .gallery-overlay {
+            opacity: 1;
+        }
+
+        .gallery-info {
+            color: var(--text-light);
+        }
+
+        .gallery-info h4 {
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .gallery-info p {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        .load-more {
+            text-align: center;
+            margin-top: 2rem;
+        }
+
+        .load-more-btn {
+            background: var(--primary-color);
+            color: var(--text-light);
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: var(--transition);
+            font-weight: 600;
+        }
+
+        .load-more-btn:hover {
+            background: var(--secondary-color);
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            position: relative;
+            max-width: 90vw;
+            max-height: 90vh;
+            border-radius: 15px;
+            overflow: hidden;
+        }
+
+        .modal img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: rgba(0, 0, 0, 0.7);
+            color: var(--text-light);
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Testimonials */
+        .testimonials {
+            background: var(--bg-dark);
+            color: var(--text-light);
+        }
+
+        .testimonials-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .testimonial-card {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 2rem;
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: var(--transition);
+        }
+
+        .testimonial-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .testimonial-text {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            margin-bottom: 1.5rem;
+            font-style: italic;
+        }
+
+        .testimonial-author {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .author-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--secondary-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: var(--text-light);
+        }
+
+        .author-info h4 {
+            margin-bottom: 0.2rem;
+        }
+
+        .author-info p {
+            font-size: 0.9rem;
+            opacity: 0.7;
+        }
+
+        .stars {
+            color: var(--accent-color);
+            margin-bottom: 1rem;
+        }
+
+        /* Promo Section */
+        .promo {
+            background: var(--secondary-color);
+            color: var(--text-light);
+            text-align: center;
+        }
+
+        .promo-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .promo h2 {
+            font-size: clamp(2rem, 5vw, 3rem);
+            margin-bottom: 1rem;
+        }
+
+        .promo p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+        }
+
+        .promo-timer {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .timer-item {
+            text-align: center;
+        }
+
+        .timer-number {
+            font-size: 2rem;
+            font-weight: bold;
+            display: block;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 1rem;
+            border-radius: 10px;
+            margin-bottom: 0.5rem;
+        }
+
+        .timer-label {
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Booking Section */
+        .booking {
+            background: var(--bg-light);
+        }
+
+        .booking-form {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            padding: 3rem;
+            border-radius: 20px;
+            box-shadow: var(--shadow);
+        }
+
+        .form-group {
+            margin-bottom: 2rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: var(--transition);
+            font-family: inherit;
+        }
+
+        .form-control:focus {
+            border-color: var(--secondary-color);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(255, 71, 87, 0.1);
+        }
+
+        textarea.form-control {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .submit-btn {
+            width: 100%;
+            background: var(--secondary-color);
+            color: var(--text-light);
+            border: none;
+            padding: 1.2rem;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .submit-btn:hover:not(:disabled) {
+            background: #e63946;
+            transform: translateY(-2px);
+        }
+
+        .submit-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .form-message {
+            padding: 1rem;
+            border-radius: 10px;
+            margin-top: 1rem;
+            display: none;
+        }
+
+        .form-message.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .form-message.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .privacy-notice {
+            font-size: 0.9rem;
+            color: #666;
+            margin-top: 1rem;
+            padding: 1rem;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+
+        /* Contact Section */
+        .contact {
+            background: var(--bg-dark);
+            color: var(--text-light);
+        }
+
+        .contact-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 3rem;
+        }
+
+        .contact-info h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            color: var(--secondary-color);
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .contact-item i {
+            width: 50px;
+            height: 50px;
+            background: var(--secondary-color);
+            color: var(--text-light);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .social-links a {
+            width: 50px;
+            height: 50px;
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text-light);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .social-links a:hover {
+            background: var(--secondary-color);
+            transform: translateY(-3px);
+        }
+
+        .map-container {
+            height: 300px;
+            border-radius: 15px;
+            overflow: hidden;
+            background: #333;
+        }
+
+        /* Footer */
+        .footer {
+            background: var(--primary-color);
+            color: var(--text-light);
+            text-align: center;
+            padding: 2rem 0;
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate-on-scroll {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.6s ease-out;
+        }
+
+        .animate-on-scroll.animate {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .hamburger {
+                display: flex;
+            }
+
+            .nav-menu {
+                position: fixed;
+                top: 80px;
+                left: -100%;
+                width: 100%;
+                background: rgba(0, 0, 0, 0.98);
+                flex-direction: column;
+                padding: 2rem;
+                transition: var(--transition);
+            }
+
+            .nav-menu.active {
+                left: 0;
+            }
+
+            .about-content {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+
+            .gallery-grid {
+                grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+                gap: 1rem;
+            }
+
+            .testimonials-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .promo-timer {
+                gap: 1rem;
+            }
+
+            .timer-number {
+                font-size: 1.5rem;
+                padding: 0.8rem;
+            }
+
+            .contact-content {
+                grid-template-columns: 1fr;
+            }
+
+            .section {
+                padding: 4rem 0;
+            }
+        }
+
+        /* Utility Classes */
+        .hidden {
+            display: none !important;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        .mb-2 {
+            margin-bottom: 1rem;
+        }
+
+        /* Scroll to top button */
+        .scroll-top {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            width: 50px;
+            height: 50px;
+            background: var(--secondary-color);
+            color: var(--text-light);
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            opacity: 0;
+            visibility: hidden;
+            transition: var(--transition);
+            z-index: 999;
+        }
+
+        .scroll-top.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .scroll-top:hover {
+            background: #e63946;
+            transform: translateY(-3px);
+        }
+    </style>
+</head>
+<body>
+    <!-- Loading Screen -->
+    <div class="loading-screen">
+        <div class="loader"></div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="#inicio" class="logo">
+                <i class="fas fa-paint-brush"></i>
+                TheBunker
+            </a>
+            <ul class="nav-menu">
+                <li><a href="#inicio">Inicio</a></li>
+                <li><a href="#sobre">Sobre</a></li>
+                <li><a href="#galeria">Galería</a></li>
+                <li><a href="#testimonios">Testimonios</a></li>
+                <li><a href="#promo">Promo</a></li>
+                <li><a href="#reservar">Reservar</a></li>
+                <li><a href="#contacto">Contacto</a></li>
+            </ul>
+            <div class="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="inicio" class="hero">
+        <div class="hero-content">
+            <h1>Arte en tu Piel</h1>
+            <p class="hero-subtitle">Convertimos tus ideas en obras de arte únicas e inolvidables</p>
+            <a href="#reservar" class="cta-button">Reserva tu Cita</a>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="sobre" class="section about">
+        <div class="container">
+            <div class="section-header animate-on-scroll">
+                <h2 class="section-title">Sobre Nosotros</h2>
+                <p class="section-subtitle">Más de 10 años creando arte corporal único</p>
+            </div>
+            <div class="about-content">
+                <div class="about-text animate-on-scroll">
+                    <h3>Pasión por el Arte Corporal</h3>
+                    <p>En TheBunker, cada tatuaje cuenta una historia. Nuestro equipo de artistas especializados combina técnica, creatividad y pasión para crear diseños únicos que reflejen tu personalidad.</p>
+                    <p>Utilizamos solo los mejores materiales y seguimos estrictos protocolos de higiene y seguridad. Tu satisfacción y bienestar son nuestra prioridad.</p>
+                    <p>Desde diseños tradicionales hasta estilos contemporáneos, estamos aquí para hacer realidad tu visión artística.</p>
+                </div>
+                <div class="about-image animate-on-scroll">
+    <img src="Captura%20de%20pantalla%202025-09-19%20014702.png" alt="Estudio de tatuajes">
+</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Gallery Section -->
+    <section id="galeria" class="section gallery">
+        <div class="container">
+            <div class="section-header animate-on-scroll">
+                <h2 class="section-title">Galería</h2>
+                <p class="section-subtitle">Descubre nuestros trabajos más destacados</p>
+            </div>
+            
+            <div class="gallery-filters animate-on-scroll">
+                <button class="filter-btn active" data-filter="all">Todos</button>
+                <button class="filter-btn" data-filter="tradicional">Tradicional</button>
+                <button class="filter-btn" data-filter="blackwork">Blackwork</button>
+                <button class="filter-btn" data-filter="japones">Japonés</button>
+                <button class="filter-btn" data-filter="small">Small Tattoos</button>
+            </div>
+
+            <div class="gallery-grid" id="galleryGrid">
+                <!-- Gallery items will be loaded dynamically -->
+            </div>
+
+            <div class="load-more">
+                <button class="load-more-btn" id="loadMoreBtn">Cargar Más</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Modal -->
+    <div class="modal" id="modal">
+        <div class="modal-content">
+            <button class="modal-close" id="modalClose">&times;</button>
+            <img src="" alt="" id="modalImage">
+        </div>
+    </div>
+
+    <!-- Testimonials Section -->
+    <section id="testimonios" class="section testimonials">
+        <div class="container">
+            <div class="section-header animate-on-scroll">
+                <h2 class="section-title">Testimonios</h2>
+                <p class="section-subtitle">Lo que dicen nuestros clientes</p>
+            </div>
+            
+            <div class="testimonials-grid">
+                <div class="testimonial-card animate-on-scroll">
+                    <div class="stars">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <p class="testimonial-text">"Increíble experiencia. El diseño superó mis expectativas y el proceso fue muy profesional. Definitivamente regresaré."</p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">M</div>
+                        <div class="author-info">
+                            <h4>María González</h4>
+                            <p>Cliente satisfecha</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="testimonial-card animate-on-scroll">
+                    <div class="stars">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <p class="testimonial-text">"Excelente atención y trabajo impecable. El estudio es muy limpio y profesional. Totalmente recomendado."</p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">C</div>
+                        <div class="author-info">
+                            <h4>Carlos Rodríguez</h4>
+                            <p>Cliente frecuente</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="testimonial-card animate-on-scroll">
+                    <div class="stars">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <p class="testimonial-text">"Mi primer tatuaje y no pude elegir mejor lugar. Me explicaron todo el proceso y quedé encantada con el resultado."</p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">A</div>
+                        <div class="author-info">
+                            <h4>Ana Martínez</h4>
+                            <p>Primera experiencia</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Promo Section -->
+    <section id="promo" class="section promo">
+        <div class="container">
+            <div class="promo-content animate-on-scroll">
+                <h2>¡Oferta Especial!</h2>
+                <p>20% de descuento en tu primer tatuaje grande. Oferta limitada.</p>
+                
+                <div class="promo-timer">
+                    <div class="timer-item">
+                        <span class="timer-number" id="days">00</span>
+                        <span class="timer-label">Días</span>
+                    </div>
+                    <div class="timer-item">
+                        <span class="timer-number" id="hours">00</span>
+                        <span class="timer-label">Horas</span>
+                    </div>
+                    <div class="timer-item">
+                        <span class="timer-number" id="minutes">00</span>
+                        <span class="timer-label">Minutos</span>
+                    </div>
+                    <div class="timer-item">
+                        <span class="timer-number" id="seconds">00</span>
+                        <span class="timer-label">Segundos</span>
+                    </div>
+                </div>
+
+                <a href="#reservar" class="cta-button">Aprovecha la Oferta</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Booking Section -->
+    <section id="reservar" class="section booking">
+        <div class="container">
+            <div class="section-header animate-on-scroll">
+                <h2 class="section-title">Reserva tu Cita</h2>
+                <p class="section-subtitle">Completa el formulario y nos pondremos en contacto contigo</p>
+            </div>
+
+            <form class="booking-form animate-on-scroll" id="bookingForm">
+                <div class="form-group">
+                    <label for="nombre">Nombre Completo *</label>
+                    <input type="text" id="nombre" name="nombre" class="form-control" required>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="telefono">Teléfono/WhatsApp *</label>
+                        <input type="tel" id="telefono" name="telefono" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email *</label>
+                        <input type="email" id="email" name="email" class="form-control" required>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="estilo">Estilo Preferido</label>
+                        <select id="estilo" name="estilo" class="form-control">
+                            <option value="">Seleccionar estilo</option>
+                            <option value="tradicional">Tradicional</option>
+                            <option value="blackwork">Blackwork</option>
+                            <option value="japones">Japonés</option>
+                            <option value="small">Small Tattoos</option>
+                            <option value="realismo">Realismo</option>
+                            <option value="geometrico">Geométrico</option>
+                            <option value="otro">Otro</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="fecha">Fecha Preferida *</label>
+                        <input type="date" id="fecha" name="fecha" class="form-control" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="hora">Hora Aproximada</label>
+                    <select id="hora" name="hora" class="form-control">
+                        <option value="">Seleccionar hora</option>
+                        <option value="09:00">09:00 AM</option>
+                        <option value="10:00">10:00 AM</option>
+                        <option value="11:00">11:00 AM</option>
+                        <option value="12:00">12:00 PM</option>
+                        <option value="13:00">01:00 PM</option>
+                        <option value="14:00">02:00 PM</option>
+                        <option value="15:00">03:00 PM</option>
+                        <option value="16:00">04:00 PM</option>
+                        <option value="17:00">05:00 PM</option>
+                        <option value="18:00">06:00 PM</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="descripcion">Descripción del Tatuaje *</label>
+                    <textarea id="descripcion" name="descripcion" class="form-control" placeholder="Describe tu idea, tamaño aproximado, ubicación en el cuerpo, etc." required></textarea>
+                </div>
+
+                <div class="g-recaptcha" data-sitekey="6LfHSs4rAAAAACqlyVICf34Rk1qKUoCTqozFfA3Y"></div>
+
+                <button type="submit" class="submit-btn" id="submitBtn">
+                    <i class="fas fa-paper-plane"></i> Enviar Solicitud
+                </button>
+
+                <div class="form-message" id="formMessage"></div>
+
+                <div class="privacy-notice">
+                    <i class="fas fa-shield-alt"></i>
+                    <strong>Aviso de Privacidad:</strong> Al enviar este formulario, aceptas que usemos tus datos para agendar tu cita y contactarte. Tus datos están seguros con nosotros.
+                </div>
+            </form>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contacto" class="section contact">
+        <div class="container">
+            <div class="section-header animate-on-scroll">
+                <h2 class="section-title">Contacto</h2>
+                <p class="section-subtitle">Visítanos o contáctanos directamente</p>
+            </div>
+
+            <div class="contact-content">
+                <div class="contact-info animate-on-scroll">
+                    <h3>Información de Contacto</h3>
+                    
+                    <div class="contact-item">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <div>
+                            <h4>Dirección</h4>
+                            <p>Calle Principal #123<br>Santo Domingo, República Dominicana</p>
+                        </div>
+                    </div>
+
+                    <div class="contact-item">
+                        <i class="fas fa-phone"></i>
+                        <div>
+                            <h4>Teléfono</h4>
+                            <p><a href="tel:+18095551234" style="color: inherit; text-decoration: none;">+1 (809) 555-1234</a></p>
+                        </div>
+                    </div>
+
+                    <div class="contact-item">
+                        <i class="fab fa-whatsapp"></i>
+                        <div>
+                            <h4>WhatsApp</h4>
+                            <p><a href="https://wa.me/18095551234" target="_blank" style="color: inherit; text-decoration: none;">+1 (809) 555-1234</a></p>
+                        </div>
+                    </div>
+
+                    <div class="contact-item">
+                        <i class="fas fa-envelope"></i>
+                        <div>
+                            <h4>Email</h4>
+                            <p><a href="mailto:info@inkstudio.com" style="color: inherit; text-decoration: none;">info@inkstudio.com</a></p>
+                        </div>
+                    </div>
+
+                    <div class="contact-item">
+                        <i class="fas fa-clock"></i>
+                        <div>
+                            <h4>Horarios</h4>
+                            <p>Lun - Sáb: 9:00 AM - 8:00 PM<br>Domingo: 10:00 AM - 6:00 PM</p>
+                        </div>
+                    </div>
+
+                    <div class="social-links">
+                        <a href="https://instagram.com/inkstudio" target="_blank"><i class="fab fa-instagram"></i></a>
+                        <a href="https://facebook.com/inkstudio" target="_blank"><i class="fab fa-facebook"></i></a>
+                        <a href="https://twitter.com/inkstudio" target="_blank"><i class="fab fa-twitter"></i></a>
+                        <a href="https://tiktok.com/@inkstudio" target="_blank"><i class="fab fa-tiktok"></i></a>
+                    </div>
+                </div>
+
+                <div class="map-container animate-on-scroll">
+                    <!-- Aquí iría tu mapa de Google Maps -->
+                    <div style="width: 100%; height: 100%; background: #333; display: flex; align-items: center; justify-content: center; color: #fff; border-radius: 15px;">
+                        <div style="text-align: center;">
+                            <i class="fas fa-map-marker-alt" style="font-size: 2rem; margin-bottom: 1rem; color: var(--secondary-color);"></i>
+                            <p>Mapa Interactivo<br>Santo Domingo, RD</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2025 TheBunker. Todos los derechos reservados. | DevFlex Solutions</p>
+        </div>
+    </footer>
+
+    <!-- Scroll to Top Button -->
+    <button class="scroll-top" id="scrollTop">
+        <i class="fas fa-chevron-up"></i>
+    </button>
+
+    <script>
+        // Gallery data - Replace with your actual images
+        const galleryData = [
+            { src: 'Captura%20de%20pantalla%202025-09-19%20011422.png', category: 'tradicional', title: 'Tatuaje Tradicional', description: 'Diseño clásico americano' },
+    { src: 'Captura%20de%20pantalla%202025-09-19%20011326.png', category: 'blackwork', title: 'Blackwork Arte', description: 'Tinta negra pura' },
+      { src: 'Captura%20de%20pantalla%202025-09-19%20011408.png', category: 'tradicional', title: 'Tatuaje Tradicional', description: 'Diseño clásico americano' },
+    { src: 'Captura%20de%20pantalla%202025-09-19%20011446.png', category: 'blackwork', title: 'Blackwork Arte', description: 'Tinta negra pura' },
+   { src: 'Captura%20de%20pantalla%202025-09-19%20011326.png', category: 'tradicional', title: 'Tatuaje Tradicional', description: 'Diseño clásico americano' },
+    { src: 'Captura%20de%20pantalla%202025-09-19%20014702.png', category: 'tradicional', title: 'Tatuaje Tradicional', description: 'Diseño clásico americano' },
+   
+];
+
+        let currentFilter = 'all';
+        let itemsToShow = 6;
+        let currentItems = 0;
+
+        // Initialize EmailJS
+        emailjs.init('kte1UKcVttwvfmwOC'); // Replace with your EmailJS public key
+
+        // DOM Elements
+        const hamburger = document.querySelector('.hamburger');
+        const navMenu = document.querySelector('.nav-menu');
+        const modal = document.getElementById('modal');
+        const modalImage = document.getElementById('modalImage');
+        const modalClose = document.getElementById('modalClose');
+        const galleryGrid = document.getElementById('galleryGrid');
+        const loadMoreBtn = document.getElementById('loadMoreBtn');
+        const filterBtns = document.querySelectorAll('.filter-btn');
+        const bookingForm = document.getElementById('bookingForm');
+        const scrollTop = document.getElementById('scrollTop');
+        const navbar = document.querySelector('.navbar');
+        const loadingScreen = document.querySelector('.loading-screen');
+
+        // Initialize the app
+        document.addEventListener('DOMContentLoaded', function() {
+            initApp();
+        });
+
+        function initApp() {
+            // Hide loading screen
+            setTimeout(() => {
+                loadingScreen.classList.add('fade-out');
+                setTimeout(() => {
+                    loadingScreen.style.display = 'none';
+                }, 500);
+            }, 1000);
+
+            // Initialize gallery
+            loadGalleryItems();
+            
+            // Initialize animations
+            initScrollAnimations();
+            
+            // Initialize countdown timer
+            initCountdown();
+            
+            // Set minimum date for booking
+            setMinimumDate();
+            
+            // Initialize all event listeners
+            initEventListeners();
+        }
+
+        function initEventListeners() {
+            // Mobile menu toggle
+            hamburger.addEventListener('click', () => {
+                navMenu.classList.toggle('active');
+                hamburger.classList.toggle('active');
+            });
+
+            // Close mobile menu when clicking on a link
+            document.querySelectorAll('.nav-menu a').forEach(link => {
+                link.addEventListener('click', () => {
+                    navMenu.classList.remove('active');
+                    hamburger.classList.remove('active');
+                });
+            });
+
+            // Navbar scroll effect
+            window.addEventListener('scroll', () => {
+                if (window.scrollY > 100) {
+                    navbar.classList.add('scrolled');
+                    scrollTop.classList.add('visible');
+                } else {
+                    navbar.classList.remove('scrolled');
+                    scrollTop.classList.remove('visible');
+                }
+            });
+
+            // Smooth scrolling for anchor links
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (target) {
+                        target.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'start'
+                        });
+                    }
+                });
+            });
+
+            // Gallery filter buttons
+            filterBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    filterBtns.forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    currentFilter = btn.dataset.filter;
+                    currentItems = 0;
+                    loadGalleryItems();
+                });
+            });
+
+            // Load more button
+            loadMoreBtn.addEventListener('click', loadGalleryItems);
+
+            // Modal events
+            modalClose.addEventListener('click', closeModal);
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) closeModal();
+            });
+
+            // Escape key to close modal
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape') closeModal();
+            });
+
+            // Form submission
+            bookingForm.addEventListener('submit', handleFormSubmit);
+
+            // Scroll to top button
+            scrollTop.addEventListener('click', () => {
+                window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
+            });
+        }
+
+        function loadGalleryItems() {
+            const filteredItems = currentFilter === 'all' 
+                ? galleryData 
+                : galleryData.filter(item => item.category === currentFilter);
+
+            const itemsToLoad = filteredItems.slice(currentItems, currentItems + itemsToShow);
+
+            if (currentItems === 0) {
+                galleryGrid.innerHTML = '';
+            }
+
+            itemsToLoad.forEach(item => {
+                const galleryItem = createGalleryItem(item);
+                galleryGrid.appendChild(galleryItem);
+            });
+
+            currentItems += itemsToLoad.length;
+
+            // Hide load more button if no more items
+            if (currentItems >= filteredItems.length) {
+                loadMoreBtn.style.display = 'none';
+            } else {
+                loadMoreBtn.style.display = 'block';
+            }
+
+            // Add lazy loading to new images
+            lazyLoadImages();
+        }
+
+        function createGalleryItem(item) {
+            const div = document.createElement('div');
+            div.className = `gallery-item animate-on-scroll ${item.category}`;
+            div.innerHTML = `
+                <img src="${item.src}" alt="${item.title}" loading="lazy">
+                <div class="gallery-overlay">
+                    <div class="gallery-info">
+                        <h4>${item.title}</h4>
+                        <p>${item.description}</p>
+                    </div>
+                </div>
+            `;
+            
+            div.addEventListener('click', () => openModal(item.src, item.title));
+            return div;
+        }
+
+        function openModal(src, alt) {
+            modalImage.src = src;
+            modalImage.alt = alt;
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal() {
+            modal.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        function lazyLoadImages() {
+            const images = document.querySelectorAll('img[loading="lazy"]');
+            
+            if ('IntersectionObserver' in window) {
+                const imageObserver = new IntersectionObserver((entries, observer) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            const img = entry.target;
+                            img.classList.add('loaded');
+                            observer.unobserve(img);
+                        }
+                    });
+                });
+
+                images.forEach(img => imageObserver.observe(img));
+            }
+        }
+
+        function initScrollAnimations() {
+            const animatedElements = document.querySelectorAll('.animate-on-scroll');
+            
+            if ('IntersectionObserver' in window) {
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            entry.target.classList.add('animate');
+                        }
+                    });
+                }, {
+                    threshold: 0.1,
+                    rootMargin: '0px 0px -50px 0px'
+                });
+
+                animatedElements.forEach(el => observer.observe(el));
+            } else {
+                // Fallback for browsers without IntersectionObserver
+                animatedElements.forEach(el => el.classList.add('animate'));
+            }
+        }
+
+        function initCountdown() {
+            // Set countdown to 30 days from now
+            const countdownDate = new Date().getTime() + (30 * 24 * 60 * 60 * 1000);
+            
+            const timer = setInterval(() => {
+                const now = new Date().getTime();
+                const distance = countdownDate - now;
+
+                const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+                document.getElementById('days').textContent = days.toString().padStart(2, '0');
+                document.getElementById('hours').textContent = hours.toString().padStart(2, '0');
+                document.getElementById('minutes').textContent = minutes.toString().padStart(2, '0');
+                document.getElementById('seconds').textContent = seconds.toString().padStart(2, '0');
+
+                if (distance < 0) {
+                    clearInterval(timer);
+                    document.querySelector('.promo-timer').innerHTML = '<h3 style="color: white;">¡Oferta expirada!</h3>';
+                }
+            }, 1000);
+        }
+
+        function setMinimumDate() {
+            const today = new Date();
+            const tomorrow = new Date(today);
+            tomorrow.setDate(tomorrow.getDate() + 1);
+            
+            const dateInput = document.getElementById('fecha');
+            dateInput.min = tomorrow.toISOString().split('T')[0];
+        }
+
+        function handleFormSubmit(e) {
+            e.preventDefault();
+            
+            const submitBtn = document.getElementById('submitBtn');
+            const formMessage = document.getElementById('formMessage');
+            
+            // Basic validation
+            if (!validateForm()) {
+                showMessage('Por favor, completa todos los campos requeridos correctamente.', 'error');
+                return;
+            }
+            
+            // Show loading state
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Enviando...';
+            
+            // Get form data
+            const formData = new FormData(bookingForm);
+            const data = Object.fromEntries(formData.entries());
+            
+            // Send email using EmailJS
+            sendEmail(data)
+                .then(() => {
+                    showMessage('¡Solicitud enviada exitosamente! Nos pondremos en contacto contigo pronto.', 'success');
+                    bookingForm.reset();
+                    setMinimumDate(); // Reset minimum date
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    showMessage('Hubo un error al enviar tu solicitud. Por favor, inténtalo nuevamente.', 'error');
+                })
+                .finally(() => {
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Enviar Solicitud';
+                });
+        }
+
+        function validateForm() {
+            const requiredFields = ['nombre', 'telefono', 'email', 'fecha', 'descripcion'];
+            let isValid = true;
+
+            requiredFields.forEach(fieldName => {
+                const field = document.getElementById(fieldName);
+                if (!field.value.trim()) {
+                    field.style.borderColor = 'var(--secondary-color)';
+                    isValid = false;
+                } else {
+                    field.style.borderColor = '#e9ecef';
+                }
+            });
+
+            // Validate email format
+            const email = document.getElementById('email');
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email.value)) {
+                email.style.borderColor = 'var(--secondary-color)';
+                isValid = false;
+            }
+
+            // Validate phone format (basic)
+            const phone = document.getElementById('telefono');
+            const phoneRegex = /^[\+]?[1-9][\d]{0,15}$/;
+            if (!phoneRegex.test(phone.value.replace(/\s/g, ''))) {
+                phone.style.borderColor = 'var(--secondary-color)';
+                isValid = false;
+            }
+
+            // Validate date is not in the past
+            const fecha = document.getElementById('fecha');
+            const selectedDate = new Date(fecha.value);
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            if (selectedDate < today) {
+                fecha.style.borderColor = 'var(--secondary-color)';
+                isValid = false;
+            }
+
+            return isValid;
+        }
+
+        function sendEmail(data) {
+            return new Promise((resolve, reject) => {
+                // Template parameters for EmailJS
+                const templateParams = {
+                    to_email: 'tanishamaria7@gmail.com', // Replace with your email
+                    from_name: data.nombre,
+                    from_email: data.email,
+                    phone: data.telefono,
+                    style: data.estilo,
+                    date: data.fecha,
+                    time: data.hora,
+                    description: data.descripcion,
+                    message: `Nueva solicitud de cita:
+                    
+Nombre: ${data.nombre}
+Teléfono: ${data.telefono}
+Email: ${data.email}
+Estilo: ${data.estilo}
+Fecha preferida: ${data.fecha}
+Hora: ${data.hora}
+Descripción: ${data.descripcion}`
+                };
+
+                // Send email using EmailJS
+                emailjs.send(
+                    'service_2wg5ww9', // Replace with your EmailJS service ID
+                    'template_d2mo5zs', // Replace with your EmailJS template ID
+                    templateParams
+                ).then(resolve).catch(reject);
+
+                // For demo purposes, we'll simulate success after 2 seconds
+                setTimeout(() => {
+                    resolve({ status: 200 });
+                }, 2000);
+            });
+        }
+
+        function showMessage(message, type) {
+            const formMessage = document.getElementById('formMessage');
+            formMessage.textContent = message;
+            formMessage.className = `form-message ${type}`;
+            formMessage.style.display = 'block';
+            
+            // Auto hide after 5 seconds
+            setTimeout(() => {
+                formMessage.style.display = 'none';
+            }, 5000);
+        }
+
+        // Additional utility functions
+        function debounce(func, wait) {
+            let timeout;
+            return function executedFunction(...args) {
+                const later = () => {
+                    clearTimeout(timeout);
+                    func(...args);
+                };
+                clearTimeout(timeout);
+                timeout = setTimeout(later, wait);
+            };
+        }
+
+        // Performance optimization for scroll events
+        const optimizedScroll = debounce(() => {
+            // Scroll-based animations can go here
+        }, 10);
+
+        window.addEventListener('scroll', optimizedScroll);
+
+        // Service Worker for caching (optional)
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js')
+                    .then((registration) => {
+                        console.log('SW registered: ', registration);
+                    })
+                    .catch((registrationError) => {
+                        console.log('SW registration failed: ', registrationError);
+                    });
+            });
+        }
+
+        // Google Analytics (replace with your tracking ID)
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'GA_TRACKING_ID');
+
+        // Error handling for images
+        document.addEventListener('error', function(e) {
+            if (e.target.tagName === 'IMG') {
+                e.target.src = 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="300" height="300" viewBox="0 0 300 300"><rect width="300" height="300" fill="%23f0f0f0"/><text x="150" y="150" text-anchor="middle" fill="%23999" font-size="14">Imagen no disponible</text></svg>';
+            }
+        }, true);
+
+        // WhatsApp integration
+        function sendWhatsApp() {
+            const phone = '+18095551234'; // Replace with your WhatsApp number
+            const message = 'Hola, me gustaría agendar una cita para un tatuaje.';
+            const url = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
+            window.open(url, '_blank');
+        }
+
+        // Add WhatsApp floating button
+        const whatsappBtn = document.createElement('div');
+        whatsappBtn.innerHTML = `
+            <a href="javascript:sendWhatsApp()" class="whatsapp-float">
+                <i class="fab fa-whatsapp"></i>
+            </a>
+        `;
+        whatsappBtn.style.cssText = `
+            position: fixed;
+            bottom: 80px;
+            right: 2rem;
+            z-index: 998;
+        `;
+        
+        const whatsappStyle = document.createElement('style');
+        whatsappStyle.textContent = `
+            .whatsapp-float {
+                width: 60px;
+                height: 60px;
+                background: #25d366;
+                color: white;
+                border-radius: 50%;
+                text-align: center;
+                font-size: 24px;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                text-decoration: none;
+                transition: all 0.3s ease;
+                animation: pulse 2s infinite;
+            }
+            .whatsapp-float:hover {
+                background: #128c7e;
+                transform: translateY(-2px);
+                box-shadow: 0 6px 16px rgba(0,0,0,0.2);
+            }
+            @keyframes pulse {
+                0% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.7); }
+                70% { box-shadow: 0 0 0 10px rgba(37, 211, 102, 0); }
+                100% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0); }
+            }
+            @media (max-width: 768px) {
+                .whatsapp-float {
+                    width: 50px;
+                    height: 50px;
+                    font-size: 20px;
+                    bottom: 70px;
+                    right: 1rem;
+                }
+            }
+        `;
+        
+        document.head.appendChild(whatsappStyle);
+        document.body.appendChild(whatsappBtn);
+
+        // Schema.org JSON-LD for SEO
+        const schema = {
+            "@context": "https://schema.org",
+            "@type": "TattooShop",
+            "name": "TheBunker",
+            "description": "Estudio de tatuajes profesional especializado en diseños únicos",
+            "url": "https://inkstudio.com",
+            "telephone": "+1-809-555-1234",
+            "address": {
+                "@type": "PostalAddress",
+                "streetAddress": "Calle Principal #123",
+                "addressLocality": "Santo Domingo",
+                "addressCountry": "DO"
+            },
+            "openingHours": [
+                "Mo-Sa 09:00-20:00",
+                "Su 10:00-18:00"
+            ],
+            "sameAs": [
+                "https://instagram.com/inkstudio",
+                "https://facebook.com/inkstudio"
+            ],
+            "priceRange": "$"
+        };
+
+        const scriptTag = document.createElement('script');
+        scriptTag.type = 'application/ld+json';
+        scriptTag.textContent = JSON.stringify(schema);
+        document.head.appendChild(scriptTag);
+
+        // Keyboard navigation for accessibility
+        document.addEventListener('keydown', function(e) {
+            // Tab navigation for gallery items
+            if (e.key === 'Tab' && document.activeElement.classList.contains('gallery-item')) {
+                e.preventDefault();
+                const galleryItems = Array.from(document.querySelectorAll('.gallery-item'));
+                const currentIndex = galleryItems.indexOf(document.activeElement);
+                const nextIndex = e.shiftKey ? currentIndex - 1 : currentIndex + 1;
+                
+                if (nextIndex >= 0 && nextIndex < galleryItems.length) {
+                    galleryItems[nextIndex].focus();
+                }
+            }
+            
+            // Enter key to open gallery modal
+            if (e.key === 'Enter' && document.activeElement.classList.contains('gallery-item')) {
+                document.activeElement.click();
+            }
+        });
+
+        // Make gallery items focusable for accessibility
+        document.addEventListener('DOMContentLoaded', function() {
+            const style = document.createElement('style');
+            style.textContent = `
+                .gallery-item {
+                    outline: none;
+                    transition: all 0.3s ease;
+                }
+                .gallery-item:focus {
+                    outline: 3px solid var(--secondary-color);
+                    outline-offset: 2px;
+                }
+            `;
+            document.head.appendChild(style);
+        });
+    </script>
+</body>
+</html>
